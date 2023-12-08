@@ -1,0 +1,528 @@
+Problem Statement:
+You are tasked with designing a database schema for a parking lot management system. The system should support multiple parking lots, each with multiple levels and spaces. Users should be able to book parking spaces for specific durations, and vendors should manage their parking lots efficiently. The system should handle different vehicle types, track payments, and allow for user reviews. Additionally, parking spaces should become available after bookings end.
+
+Schema Explanation:
+User Management:
+
+Users register and can be either regular users or vendors.
+Parking Lot Management:
+
+Vendors can manage multiple parking lots, each with its own details.
+Parking Level Management:
+
+Each parking lot can have multiple levels.
+Parking Space Management:
+
+Spaces on each level are managed, indicating their availability and associated fees.
+Booking Management:
+
+Users can book parking spaces for specific durations.
+Vehicle Management:
+
+Users can register their vehicles.
+Payment Management:
+
+Payments for parking are tracked.
+Reviews and Ratings:
+
+Users can provide reviews and ratings for parking lots.
+Notification System:
+
+Users receive notifications about bookings and other relevant information.
+Complete Schema:
+plaintext
+Copy code
+1. User Management:
+   - UserID (Primary Key)
+   - FirstName
+   - LastName
+   - Email
+   - Password (hashed)
+   - UserRole (e.g., Admin, Vendor, User)
+
+2. Parking Lot Management:
+   - LotID (Primary Key)
+   - LotName
+   - TotalSpaces
+   - AvailableSpaces
+   - Location
+   - PricePerHour
+   - OpeningHours
+   - ClosingHours
+   - VendorID (Foreign Key)
+
+3. Parking Level Management:
+   - LevelID (Primary Key)
+   - LevelName
+   - LotID (Foreign Key)
+
+4. Parking Space Management:
+   - SpaceID (Primary Key)
+   - LevelID (Foreign Key)
+   - Block
+   - SpotNumber
+   - Status (Occupied/Available)
+   - VehicleType (e.g., Car, 2Wheeler, Truck)
+   - FeePerHour
+
+5. Booking Management:
+   - BookingID (Primary Key)
+   - UserID (Foreign Key)
+   - SpaceID (Foreign Key)
+   - StartTime
+   - EndTime
+   - TotalCost
+   - Status (e.g., Active, Completed, Canceled)
+
+6. Vehicle Management:
+   - VehicleID (Primary Key)
+   - UserID (Foreign Key)
+   - PlateNumber
+   - Model
+   - Color
+   - VehicleType
+
+7. Payment Management:
+   - PaymentID (Primary Key)
+   - BookingID (Foreign Key)
+   - Amount
+   - PaymentTime
+   - PaymentMethod
+   - TransactionID (for external payment systems)
+
+8. Reviews and Ratings:
+   - ReviewID (Primary Key)
+   - UserID (Foreign Key)
+   - LotID (Foreign Key)
+   - Rating
+   - Comment
+   - Time
+
+9. Notification System:
+   - NotificationID (Primary Key)
+   - UserID (Foreign Key)
+   - Message
+   - Time
+Sample Data:
+plaintext
+Copy code
+1. User Management:
+   | UserID | FirstName | LastName | Email             | Password  | UserRole |
+   |--------|-----------|----------|-------------------|-----------|----------|
+   | 1      | John      | Doe      | john@example.com  | ********  | User     |
+   | 2      | Alice     | Smith    | alice@example.com | ********  | Vendor   |
+
+2. Parking Lot Management:
+   | LotID | LotName        | TotalSpaces | AvailableSpaces | Location          | PricePerHour | OpeningHours | ClosingHours | VendorID |
+   |-------|----------------|-------------|------------------|-------------------|--------------|--------------|--------------|----------|
+   | 1     | Main Parking   | 200         | 150              | Main Street, City | 5.00         | 08:00 AM     | 10:00 PM     | 2        |
+   | 2     | Valet Parking  | 100         | 80               | Downtown Square   | 8.00         | 09:00 AM     | 11:00 PM     | 2        |
+
+3. Parking Level Management:
+   | LevelID | LevelName | LotID |
+   |---------|-----------|-------|
+   | 1       | Level 1   | 1     |
+   | 2       | Level 2   | 1     |
+   | 3       | Ground    | 2     |
+
+4. Parking Space Management:
+   | SpaceID | LevelID | Block | SpotNumber | Status     | VehicleType | FeePerHour |
+   |---------|---------|-------|------------|------------|-------------|------------|
+   | 1       | 1       | A     | A1         | Available  | Car         | 5.00       |
+   | 2       | 1       | A     | A2         | Occupied   | Truck       | 8.00       |
+   | 3       | 2       | B     | B1         | Available  | 2Wheeler    | 3.00       |
+   | 4       | 3       | C     | C1         | Available  | Car         | 6.00       |
+
+5. Booking Management:
+   | BookingID | UserID | SpaceID | StartTime           | EndTime             | TotalCost | Status   |
+   |-----------|--------|---------|---------------------|---------------------|-----------|----------|
+   | 1         | 1      | 1       | 2023-12-06 09:00 AM| 2023-12-06 11:00 AM| 10.00     | Completed|
+   | 2         | 2      | 2       | 2023-12-06 10:00 AM| 2023-12-06 12:00 PM| 16.00     | Active   |
+   | 3         | 1      | 3       | 2023-12-06 11:00 AM| 2023-12-06 01:00 PM| 9.00      | Active   |
+
+6. Vehicle Management:
+   | VehicleID | UserID | PlateNumber | Model    | Color  | VehicleType |
+   |-----------|--------|-------------|----------|--------|-------------|
+   | 1         | 1      | ABC123      | Sedan    | Blue   | Car         |
+   | 2         | 2      | XYZ456      | Truck    | Red    | Truck       |
+
+7. Payment Management:
+   | PaymentID | BookingID | Amount | PaymentTime           | PaymentMethod | TransactionID |
+   |-----------|-----------|--------|-----------------------|---------------|---------------|
+   | 1         | 1         | 10.00  | 2023-12-06 11:00 AM  | Credit Card   | XYZ123        |
+   | 2         | 2         | 16.00  | 2023-12-06 12:00 PM  | PayPal        | ABC456        |
+
+8. Reviews and Ratings:
+   | ReviewID | UserID | LotID | Rating | Comment           | Time                |
+   |----------|--------|-------|--------|-------------------|---------------------|
+   | 1        | 1      | 1     | 4.5    | Great parking spot| 2023-12-06 01:00 PM|
+   | 2        | 2      | 2     | 3.8    | Needs more lighting| 2023-12-06 02:00 PM|
+
+9. Notification System:
+   | NotificationID | UserID | Message                    | Time                |
+   |-----------------|--------|----------------------------|---------------------|
+   | 1               | 1      | Your booking is confirmed! | 2023-12-06 10:30 AM|
+   | 2               | 2      | New review on your lot!    | 2023-12-06 02:30 PM|
+Explanation:
+User Management: Manages user information, distinguishing between regular users, vendors, and administrators.
+
+Parking Lot Management: Each vendor can manage multiple parking lots, each with its own details.
+
+Parking Level Management: Each parking lot can have multiple levels to organize spaces.
+
+Parking Space Management: Tracks information about each parking space, including its availability, type, and associated fees.
+
+Booking Management: Records user bookings, including start and end times, space information, and payment details.
+
+Vehicle Management: Allows users to register their vehicles for easy tracking.
+
+Payment Management: Keeps track of payments associated with bookings.
+
+Reviews and Ratings: Users can provide feedback and ratings for parking lots.
+
+Notification System: Sends notifications to users regarding their bookings and other relevant information.
+
+This schema provides a comprehensive solution for a parking lot management system, allowing for efficient tracking and management of parking spaces, user bookings, payments, and reviews.
+
+import lombok.*;
+
+import javax.persistence.*;
+import java.time.LocalTime;
+import java.util.List;
+
+@Entity
+@Data
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long userId;
+
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String password;
+    private String userRole; // e.g., Admin, Vendor, User
+}
+
+@Entity
+@Data
+public class ParkingLot {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long lotId;
+
+    private String lotName;
+    private int totalSpaces;
+    private int availableSpaces;
+    private String location;
+    private double pricePerHour;
+    private LocalTime openingHours;
+    private LocalTime closingHours;
+
+    @ManyToOne
+    @JoinColumn(name = "vendor_id")
+    private User vendor;
+}
+
+@Entity
+@Data
+public class ParkingLevel {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long levelId;
+
+    private String levelName;
+
+    @ManyToOne
+    @JoinColumn(name = "lot_id")
+    private ParkingLot parkingLot;
+}
+
+@Entity
+@Data
+public class ParkingSpace {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long spaceId;
+
+    private String block;
+    private String spotNumber;
+    private String status; // Occupied/Available
+    private String vehicleType; // e.g., Car, 2Wheeler, Truck
+    private double feePerHour;
+
+    @ManyToOne
+    @JoinColumn(name = "level_id")
+    private ParkingLevel level;
+
+    @OneToMany(mappedBy = "space")
+    private List<Booking> bookings;
+}
+
+@Entity
+@Data
+public class Booking {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long bookingId;
+
+    private LocalDateTime startTime;
+    private LocalDateTime endTime;
+    private double totalCost;
+    private String status; // Active/Completed/Canceled
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne
+    @JoinColumn(name = "space_id")
+    private ParkingSpace space;
+}
+
+@Entity
+@Data
+public class Vehicle {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long vehicleId;
+
+    private String plateNumber;
+    private String model;
+    private String color;
+    private String vehicleType; // e.g., Car, 2Wheeler, Truck
+
+    @ManyToOne
+    @JoinColumn(name = "pricing_strategy_id")
+    private PricingStrategy pricingStrategy;
+}
+
+@Entity
+@Data
+public class PricingStrategy {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long pricingStrategyId;
+
+    private String name;
+    private double feePerHour;
+}
+
+import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.util.List;
+
+@AllArgsConstructor
+@RestController
+@RequestMapping("/api/users")
+public class UserController {
+
+    private final UserService userService;
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserDTO> getUser(@PathVariable Long userId) {
+        UserDTO userDTO = userService.getUser(userId);
+        return ResponseEntity.ok(userDTO);
+    }
+
+    @PostMapping
+    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
+        UserDTO newUserDTO = userService.createUser(userDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newUserDTO);
+    }
+
+    // Other user-related endpoints
+}
+
+@AllArgsConstructor
+@RestController
+@RequestMapping("/api/parking-lots")
+public class ParkingLotController {
+
+    private final ParkingLotService parkingLotService;
+
+    @GetMapping("/{lotId}")
+    public ResponseEntity<ParkingLotDTO> getParkingLot(@PathVariable Long lotId) {
+        ParkingLotDTO parkingLotDTO = parkingLotService.getParkingLot(lotId);
+        return ResponseEntity.ok(parkingLotDTO);
+    }
+
+    @PostMapping
+    public ResponseEntity<ParkingLotDTO> createParkingLot(@RequestBody ParkingLotDTO parkingLotDTO) {
+        ParkingLotDTO newParkingLotDTO = parkingLotService.createParkingLot(parkingLotDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newParkingLotDTO);
+    }
+
+    // Other parking lot-related endpoints
+}
+
+@AllArgsConstructor
+@RestController
+@RequestMapping("/api/bookings")
+public class BookingController {
+
+    private final BookingService bookingService;
+
+    @GetMapping("/{bookingId}")
+    public ResponseEntity<BookingDTO> getBooking(@PathVariable Long bookingId) {
+        BookingDTO bookingDTO = bookingService.getBooking(bookingId);
+        return ResponseEntity.ok(bookingDTO);
+    }
+
+    @PostMapping
+    public ResponseEntity<BookingDTO> createBooking(@RequestBody BookingDTO bookingDTO) {
+        BookingDTO newBookingDTO = bookingService.createBooking(bookingDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(newBookingDTO);
+    }
+
+    // Other booking-related endpoints
+}
+
+@AllArgsConstructor
+@Service
+public class UserService {
+
+    private final UserRepository userRepository;
+
+    public UserDTO getUser(Long userId) {
+        User user = userRepository.findById(userId).orElse(null);
+        return UserMapper.toDTO(user);
+    }
+
+    public UserDTO createUser(UserDTO userDTO) {
+        User user = UserMapper.toEntity(userDTO);
+        User newUser = userRepository.save(user);
+        return UserMapper.toDTO(newUser);
+    }
+
+    // Other user-related methods
+}
+
+@AllArgsConstructor
+@Service
+public class ParkingLotService {
+
+    private final ParkingLotRepository parkingLotRepository;
+
+    public ParkingLotDTO getParkingLot(Long lotId) {
+        ParkingLot parkingLot = parkingLotRepository.findById(lotId).orElse(null);
+        return ParkingLotMapper.toDTO(parkingLot);
+    }
+
+    public ParkingLotDTO createParkingLot(ParkingLotDTO parkingLotDTO) {
+        ParkingLot parkingLot = ParkingLotMapper.toEntity(parkingLotDTO);
+        ParkingLot newParkingLot = parkingLotRepository.save(parkingLot);
+        return ParkingLotMapper.toDTO(newParkingLot);
+    }
+
+    // Other parking lot-related methods
+}
+
+@AllArgsConstructor
+@Service
+public class BookingService {
+
+    private final BookingRepository bookingRepository;
+    private final ParkingSpaceService parkingSpaceService;
+
+    public BookingDTO getBooking(Long bookingId) {
+        Booking booking = bookingRepository.findById(bookingId).orElse(null);
+        return BookingMapper.toDTO(booking);
+    }
+
+    public BookingDTO createBooking(BookingDTO bookingDTO) {
+        // Check space availability
+        boolean isSpaceAvailable = parkingSpaceService.isSpaceAvailable(bookingDTO.getSpaceId(), bookingDTO.getStartTime(), bookingDTO.getEndTime());
+
+        if (isSpaceAvailable) {
+            // Calculate cost (simplified, you might want to consider different pricing strategies)
+            long durationInHours = Duration.between(bookingDTO.getStartTime(), bookingDTO.getEndTime()).toHours();
+            double cost = durationInHours * parkingSpaceService.getSpaceCostPerHour(bookingDTO.getSpaceId(), bookingDTO.getVehicleType());
+
+            bookingDTO.setTotalCost(cost);
+            bookingDTO.setStatus("Active");
+
+            // Save the booking
+            Booking booking = BookingMapper.toEntity(bookingDTO);
+            Booking newBooking = bookingRepository.save(booking);
+
+            return BookingMapper.toDTO(newBooking);
+        } else {
+            // Handle case when space is not available
+            throw new SpaceNotAvailableException("The selected space is not available for the specified duration.");
+        }
+    }
+
+    // Other booking-related methods
+}
+
+@AllArgsConstructor
+@Service
+public class ParkingSpaceService {
+
+    private final ParkingSpaceRepository parkingSpaceRepository;
+    private final VehicleRepository vehicleRepository;
+
+    public boolean isSpaceAvailable(Long spaceId, LocalDateTime startTime, LocalDateTime endTime) {
+        ParkingSpace space = parkingSpaceRepository.findById(spaceId).orElse(null);
+
+        if (space != null && "Available".equals(space.getStatus())) {
+            // Check if the space is available for the entire duration
+            return isSpaceAvailableForDuration(space, startTime, endTime);
+        }
+
+        return false;
+    }
+
+    private boolean isSpaceAvailableForDuration(ParkingSpace space, LocalDateTime startTime, LocalDateTime endTime) {
+        List<Booking> bookings = space.getBookings();
+
+        for (Booking booking : bookings) {
+            LocalDateTime bookingStartTime = booking.getStartTime();
+            LocalDateTime bookingEndTime = booking.getEndTime();
+
+            if (startTime.isBefore(bookingEndTime) && endTime.isAfter(bookingStartTime)) {
+                // Space is occupied during the specified duration
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public double getSpaceCostPerHour(Long spaceId, String vehicleType) {
+        ParkingSpace space = parkingSpaceRepository.findById(spaceId).orElse(null);
+
+        if (space != null) {
+            // Fetch vehicle information
+            Vehicle vehicle = vehicleRepository.findBySpaceIdAndType(spaceId, vehicleType);
+
+            // Use vehicle-specific pricing strategy, if available
+            if (vehicle != null && vehicle.getPricingStrategy() != null) {
+                return vehicle.getPricingStrategy().getFeePerHour();
+            }
+
+            // Use default space cost if no specific pricing strategy for the vehicle type
+            return space.getFeePerHour();
+        }
+
+        // Default cost if space information is not available
+        return 0.0;
+    }
+
+    // Other parking space-related methods
+}
+
+// Other utility classes, mappers, and exceptions
